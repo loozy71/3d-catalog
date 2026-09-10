@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Каталог мастерской</title>
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:#f4f4f4;color:#222}
+header{background:#fff;padding:28px 24px;border-bottom:1px solid #ddd}
+h1{margin:0 0 8px;font-size:28px}
+header p{margin:0;color:#666}
+main{max-width:1200px;margin:30px auto;padding:0 20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px}
+.card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 3px 16px rgba(0,0,0,.1)}
+.photo{width:100%;height:360px;display:block;object-fit:contain;background:#eee}
+.info{padding:20px}
+.name{font-size:23px;font-weight:700;margin-bottom:8px}
+.article{color:#666;margin-bottom:14px;font-size:17px}
+.details{line-height:1.7;font-size:16px}
+button{margin-top:18px;width:100%;padding:14px 20px;border:0;border-radius:10px;background:#222;color:#fff;font-size:17px;cursor:pointer}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;padding:20px}
+.modal.open{display:flex;align-items:center;justify-content:center}
+.modal-box{position:relative;width:min(1000px,100%);height:min(90vh,800px);background:#fff;border-radius:16px;overflow:hidden}
+.close{position:absolute;right:12px;top:12px;z-index:2;width:46px;height:46px;margin:0;padding:0;border-radius:50%;background:#222;color:#fff;font-size:30px;line-height:46px}
+model-viewer{width:100%;height:100%;background:#eee}
+@media(max-width:600px){
+  .modal{padding:8px}
+  .modal-box{height:92vh;border-radius:12px}
+  .photo{height:300px}
+  .name{font-size:21px}
+}
+</style>
+</head>
+<body>
+<header>
+<h1>Каталог мастерской</h1>
+<p>Каталог изделий с интерактивными 3D-моделями</p>
+</header>
+
+<main>
+<div class="grid">
+
+  <article class="card">
+    <img class="photo" src="Hlavice-01.jpg" alt="Коринфская капитель">
+    <div class="info">
+      <div class="name">Коринфская капитель</div>
+      <div class="article">Артикул: HL-001</div>
+      <div class="details">
+        <div><strong>Материал:</strong> гипс / акрил</div>
+        <div><strong>Размер:</strong> —</div>
+      </div>
+      <button onclick="openModel('Hlavice-01.glb','Коринфская капитель')">Открыть 3D-модель</button>
+    </div>
+  </article>
+
+  <article class="card">
+    <img class="photo" src="Gorgula-01.jpg" alt="Горгуля">
+    <div class="info">
+      <div class="name">Горгуля</div>
+      <div class="article">Артикул: R-002</div>
+      <div class="details">
+        <div><strong>Материал:</strong> гипс / акрил</div>
+        <div><strong>Размер:</strong> 300 × 300 мм</div>
+      </div>
+      <button onclick="openModel('Gorgula-01.glb','Горгуля')">Открыть 3D-модель</button>
+    </div>
+  </article>
+
+</div>
+</main>
+
+<div class="modal" id="modelModal" onclick="closeOnBackground(event)">
+  <div class="modal-box">
+    <button class="close" onclick="closeModel()" aria-label="Закрыть">×</button>
+    <model-viewer id="viewer" camera-controls auto-rotate shadow-intensity="1" exposure="1"></model-viewer>
+  </div>
+</div>
+
+<script>
+function openModel(file,name){
+  const viewer=document.getElementById('viewer');
+  viewer.src=file;
+  viewer.alt=name;
+  document.getElementById('modelModal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModel(){
+  document.getElementById('modelModal').classList.remove('open');
+  document.body.style.overflow='';
+}
+function closeOnBackground(e){
+  if(e.target.id==='modelModal') closeModel();
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape') closeModel();
+});
+</script>
+</body>
+</html>
