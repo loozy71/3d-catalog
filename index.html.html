@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Каталог мастерской</title>
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f2f2f2;color:#222;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+header{padding:24px 16px 10px;text-align:center}
+h1{margin:0;font-size:28px}
+.catalog{max-width:900px;margin:0 auto;padding:16px}
+.card{background:white;border-radius:18px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,.10)}
+.photo{width:100%;display:block;max-height:560px;object-fit:contain;background:#eee}
+.info{padding:20px}
+h2{margin:0 0 12px;font-size:24px}
+p{margin:7px 0;font-size:17px}
+button{margin-top:16px;width:100%;padding:15px 18px;border:0;border-radius:12px;background:#222;color:white;font-size:17px;font-weight:600;cursor:pointer}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:10;padding:20px}
+.modal.open{display:flex;align-items:center;justify-content:center}
+.viewer{position:relative;width:min(100%,900px);height:min(85vh,750px);background:white;border-radius:18px;overflow:hidden}
+model-viewer{width:100%;height:100%;background:#eee}
+.close{position:absolute;right:10px;top:8px;z-index:2;width:44px;height:44px;margin:0;padding:0;border-radius:50%;background:rgba(0,0,0,.72);font-size:30px;line-height:44px}
+@media(max-width:600px){.modal{padding:10px}.viewer{height:88vh}.info{padding:16px}}
+</style>
+</head>
+<body>
+<header><h1>Каталог мастерской</h1></header>
+
+<main class="catalog">
+  <article class="card">
+    <img class="photo" src="Hlavice-01.jpg" alt="Коринфская капитель">
+    <div class="info">
+      <h2>Коринфская капитель</h2>
+      <p><strong>Артикул:</strong> HL-001</p>
+      <p><strong>Материал:</strong> Гипс / акрил</p>
+      <p><strong>Размер:</strong> —</p>
+      <button id="open3d">Открыть 3D-модель</button>
+    </div>
+  </article>
+</main>
+
+<div class="modal" id="modal">
+  <div class="viewer">
+    <button class="close" id="close3d" aria-label="Закрыть">×</button>
+    <model-viewer src="Hlavice-01.glb"
+      camera-controls auto-rotate shadow-intensity="1"
+      exposure="1" alt="Коринфская капитель"></model-viewer>
+  </div>
+</div>
+
+<script>
+const modal=document.getElementById('modal');
+document.getElementById('open3d').onclick=()=>modal.classList.add('open');
+document.getElementById('close3d').onclick=()=>modal.classList.remove('open');
+modal.onclick=(e)=>{if(e.target===modal) modal.classList.remove('open')};
+document.addEventListener('keydown',(e)=>{if(e.key==='Escape') modal.classList.remove('open')});
+</script>
+</body>
+</html>
