@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Workshop Catalogue</title>
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:#f4f4f4;color:#222}
+header{background:#fff;border-bottom:1px solid #ddd;padding:16px 22px}
+.top{max-width:1200px;margin:auto;display:flex;align-items:center;justify-content:space-between}
+h1{margin:0;font-size:25px}.actions{display:flex;align-items:center;gap:7px}
+.lang{border:0;background:transparent;font-weight:700;color:#777;padding:7px;cursor:pointer}.lang.active{color:#111;text-decoration:underline}
+.add{border:0;background:#222;color:#fff;border-radius:9px;padding:11px 14px;cursor:pointer}
+main{max-width:1200px;margin:25px auto;padding:0 20px}
+.categories{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:25px}
+.category{border:1px solid #ccc;background:#fff;border-radius:22px;padding:10px 16px;font-size:15px;cursor:pointer}
+.category.active{background:#222;color:#fff;border-color:#222}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:22px}
+.card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 3px 15px #0001}
+.photo{width:100%;height:320px;object-fit:contain;background:#eee;display:block}
+.info{padding:18px}.name{font-size:22px;font-weight:700}.article{color:#777;margin:7px 0 12px}
+.details{line-height:1.7}.model-btn{width:100%;margin-top:15px;padding:13px;border:0;border-radius:9px;background:#222;color:#fff;cursor:pointer}
+.modal{display:none;position:fixed;inset:0;background:#000b;z-index:50;align-items:center;justify-content:center;padding:15px}
+.modal.open{display:flex}.dialog{position:relative;background:#fff;border-radius:15px;padding:25px;width:min(650px,100%)}
+.viewer{padding:0;width:min(950px,100%);height:90vh;overflow:hidden}.viewer model-viewer{width:100%;height:100%}
+.close{position:absolute;right:10px;top:10px;z-index:2;width:42px;height:42px;border:0;border-radius:50%;background:#222;color:#fff;font-size:27px}
+label{display:block;font-weight:700;margin:12px 0 5px}input,select{width:100%;padding:11px;border:1px solid #ccc;border-radius:8px;font-size:16px}
+.submit{width:100%;margin-top:18px;padding:13px;border:0;border-radius:9px;background:#222;color:#fff}
+@media(max-width:600px){h1{font-size:20px}.photo{height:280px}}
+</style>
+</head>
+<body>
+<header><div class="top">
+<h1 id="siteTitle">Workshop Catalogue</h1>
+<div class="actions">
+<button id="enBtn" class="lang active">EN</button>
+<button id="czBtn" class="lang">CZ</button>
+<button id="addBtn" class="add">＋ ADD NEW</button>
+</div></div></header>
+
+<main>
+<div class="categories" id="categories">
+<button class="category active" data-cat="all">All</button>
+<button class="category" data-cat="cornices">Cornices</button>
+<button class="category" data-cat="figures">Figures</button>
+<button class="category" data-cat="rocks">Rocks</button>
+<button class="category" data-cat="reliefs">Reliefs</button>
+<button class="category" data-cat="capitals">Capitals</button>
+</div>
+
+<div class="grid" id="catalog">
+<article class="card" data-category="capitals">
+<img class="photo" src="Hlavice-01.jpg" alt="Corinthian Capital">
+<div class="info"><div class="name" data-en="Corinthian Capital" data-cz="Korintská hlavice">Corinthian Capital</div>
+<div class="article">HL-001</div><div class="details"><b class="material-label">Material:</b> Plaster / acrylic<br><b class="size-label">Size:</b> —</div>
+<button class="model-btn" data-model="Hlavice-01.glb" data-title-en="Corinthian Capital" data-title-cz="Korintská hlavice">Open 3D model</button></div>
+</article>
+
+<article class="card" data-category="figures">
+<img class="photo" src="Gorgula-01.jpg" alt="Gargoyle">
+<div class="info"><div class="name" data-en="Gargoyle" data-cz="Chrlič">Gargoyle</div>
+<div class="article">R-002</div><div class="details"><b class="material-label">Material:</b> Plaster / acrylic<br><b class="size-label">Size:</b> 300 × 300 mm</div>
+<button class="model-btn" data-model="Gorgula-01.glb" data-title-en="Gargoyle" data-title-cz="Chrlič">Open 3D model</button></div>
+</article>
+</div>
+</main>
+
+<div class="modal" id="adminModal"><div class="dialog"><button class="close" id="closeAdmin">×</button>
+<h2 id="adminTitle">Admin access</h2><p id="adminText">Enter password to add a product.</p>
+<input id="password" type="password"><button class="submit" id="continueBtn">Continue</button><p id="passwordMessage"></p></div></div>
+
+<div class="modal" id="addModal"><div class="dialog"><button class="close" id="closeAdd">×</button>
+<h2 id="addTitle">Add new product</h2>
+<label id="categoryLabel">Category</label><select id="productCategory">
+<option value="cornices">Cornices</option><option value="figures">Figures</option><option value="rocks">Rocks</option><option value="reliefs">Reliefs</option><option value="capitals">Capitals</option></select>
+<label>Name EN</label><input id="newNameEn"><label>Name CZ</label><input id="newNameCz">
+<label>Article</label><input id="newArticle"><label>Material</label><input id="newMaterial"><label>Size</label><input id="newSize">
+<label>Photo</label><input id="newPhoto" type="file" accept="image/*"><label>3D model (.glb)</label><input id="newModel" type="file" accept=".glb">
+<button class="submit" id="saveProduct">ADD PRODUCT</button></div></div>
+
+<div class="modal" id="viewerModal"><div class="dialog viewer"><button class="close" id="closeViewer">×</button>
+<model-viewer id="modelViewer" camera-controls auto-rotate shadow-intensity="1"></model-viewer></div></div>
+
+<script>
+const translations={
+en:{title:'Workshop Catalogue',add:'＋ ADD NEW',all:'All',cats:['Cornices','Figures','Rocks','Reliefs','Capitals'],material:'Material:',size:'Size:',open:'Open 3D model',admin:'Admin access',adminText:'Enter password to add a product.',continue:'Continue',wrong:'Incorrect password.',addTitle:'Add new product',category:'Category',addProduct:'ADD PRODUCT'},
+cz:{title:'Katalog dílny',add:'＋ PŘIDAT NOVÝ',all:'Vše',cats:['Římsy','Figury','Skály','Reliéfy','Hlavice'],material:'Materiál:',size:'Rozměr:',open:'Otevřít 3D model',admin:'Přístup správce',adminText:'Zadejte heslo pro přidání výrobku.',continue:'Pokračovat',wrong:'Nesprávné heslo.',addTitle:'Přidat nový výrobek',category:'Kategorie',addProduct:'PŘIDAT VÝROBEK'}
+};
+let lang='en';
+
+function applyLanguage(){
+ const t=translations[lang];
+ document.getElementById('siteTitle').textContent=t.title;
+ document.getElementById('addBtn').textContent=t.add;
+ document.getElementById('adminTitle').textContent=t.admin;
+ document.getElementById('adminText').textContent=t.adminText;
+ document.getElementById('continueBtn').textContent=t.continue;
+ document.getElementById('addTitle').textContent=t.addTitle;
+ document.getElementById('categoryLabel').textContent=t.category;
+ document.getElementById('saveProduct').textContent=t.addProduct;
+ document.querySelectorAll('.material-label').forEach(x=>x.textContent=t.material);
+ document.querySelectorAll('.size-label').forEach(x=>x.textContent=t.size);
+ document.querySelector('[data-cat="all"]').textContent=t.all;
+ document.querySelectorAll('.category:not([data-cat="all"])').forEach((x,i)=>x.textContent=t.cats[i]);
+ document.querySelectorAll('.name').forEach(x=>x.textContent=x.dataset[lang]);
+ document.querySelectorAll('.model-btn').forEach(x=>x.textContent=t.open);
+ document.getElementById('enBtn').classList.toggle('active',lang==='en');
+ document.getElementById('czBtn').classList.toggle('active',lang==='cz');
+}
+document.getElementById('enBtn').onclick=()=>{lang='en';applyLanguage()};
+document.getElementById('czBtn').onclick=()=>{lang='cz';applyLanguage()};
+
+document.querySelectorAll('.category').forEach(btn=>btn.onclick=()=>{
+ document.querySelectorAll('.category').forEach(x=>x.classList.remove('active'));btn.classList.add('active');
+ const c=btn.dataset.cat;
+ document.querySelectorAll('.card').forEach(card=>card.style.display=(c==='all'||card.dataset.category===c)?'block':'none');
+});
+
+document.querySelectorAll('.model-btn').forEach(btn=>btn.onclick=()=>{
+ const v=document.getElementById('modelViewer');v.src=btn.dataset.model;v.alt=btn.dataset['title-'+lang];
+ document.getElementById('viewerModal').classList.add('open');
+});
+function close(id){document.getElementById(id).classList.remove('open')}
+document.getElementById('closeViewer').onclick=()=>close('viewerModal');
+document.getElementById('closeAdmin').onclick=()=>close('adminModal');
+document.getElementById('closeAdd').onclick=()=>close('addModal');
+document.getElementById('addBtn').onclick=()=>document.getElementById('adminModal').classList.add('open');
+
+document.getElementById('continueBtn').onclick=()=>{
+ if(document.getElementById('password').value==='CHANGE_ME'){close('adminModal');document.getElementById('addModal').classList.add('open')}
+ else document.getElementById('passwordMessage').textContent=translations[lang].wrong;
+};
+
+document.getElementById('saveProduct').onclick=()=>{
+ const photo=document.getElementById('newPhoto').files[0], model=document.getElementById('newModel').files[0];
+ const card=document.createElement('article');card.className='card';card.dataset.category=document.getElementById('productCategory').value;
+ const en=document.getElementById('newNameEn').value||'Untitled',cz=document.getElementById('newNameCz').value||'Bez názvu';
+ card.innerHTML='<div class="photo"></div><div class="info"><div class="name" data-en="'+en+'" data-cz="'+cz+'"></div><div class="article">'+document.getElementById('newArticle').value+'</div><div class="details"><b class="material-label"></b> '+(document.getElementById('newMaterial').value||'—')+'<br><b class="size-label"></b> '+(document.getElementById('newSize').value||'—')+'</div></div>';
+ if(photo){const img=document.createElement('img');img.className='photo';img.src=URL.createObjectURL(photo);card.replaceChild(img,card.firstChild)}
+ if(model){const b=document.createElement('button');b.className='model-btn';b.dataset.model=URL.createObjectURL(model);b.dataset.titleEn=en;b.dataset.titleCz=cz;b.onclick=()=>{document.getElementById('modelViewer').src=b.dataset.model;document.getElementById('viewerModal').classList.add('open')};card.querySelector('.info').appendChild(b)}
+ document.getElementById('catalog').appendChild(card);applyLanguage();close('addModal');
+};
+applyLanguage();
+</script>
+</body></html>
