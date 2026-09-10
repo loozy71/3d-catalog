@@ -273,17 +273,20 @@ async function loadProducts(){
   $('grid').innerHTML=`<p>${T[lang].loading}</p>`;
   const {data,error}=await db.from('products').select('*').order('article',{ascending:true});
   if(error){
-    console.error(error);
-    products=[...fallbackProducts];
-  }else{
-    const map=new Map(fallbackProducts.map(p=>[p.id,p]));
-    (data||[]).forEach(p=>map.set(p.id,{
-      id:p.id,category:p.category,name_en:p.name_en||'',name_cz:p.name_cz||'',
-      article:p.article||'',material_en:p.material_en||'',material_cz:p.material_cz||'',
-      size:p.size||'—',photo_url:p.photo_url||'',model_url:p.model_url||'',_db:true
-    }));
-    products=[...map.values()];
+    console.error('Supabase products SELECT error:', error);
+    // Supabase is the real catalogue. Do not silently fall back to demo cards.
+    products=[];
+    $('grid').innerHTML=`<p style="color:#b3261e">Could not load the catalogue. Please refresh the page.</p>`;
+    return;
   }
+
+  // Supabase is the single source of truth.
+  // Every row in products is displayed, including newly added cards.
+  products=(data||[]).map(p=>({
+    id:p.id,category:p.category,name_en:p.name_en||'',name_cz:p.name_cz||'',
+    article:p.article||'',material_en:p.material_en||'',material_cz:p.material_cz||'',
+    size:p.size||'—',photo_url:p.photo_url||'',model_url:p.model_url||'',_db:true
+  }));
   renderCats(); render();
 }
 
